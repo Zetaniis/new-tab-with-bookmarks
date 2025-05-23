@@ -85,7 +85,7 @@ function renderBookmarks(bookmarks) {
             icon.className = 'bookmark-icon';
             // Set the title property to the bookmark/folder text (not URL)
             icon.title = bm.title || (bm.url ? '' : 'Folder');
-            if (bm.url) {
+            if (bm.url && !bm.url.startsWith('chrome://')) {
                 icon.href = bm.url;
                 // Open bookmarks in the current tab
                 icon.target = '_self';
