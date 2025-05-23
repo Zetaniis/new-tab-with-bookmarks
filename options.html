@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Tab Extension Options</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="monaco/vs/loader.js"></script>
+</head>
+
+<body>
+    <div id="options-container">
+        <h2>New Tab Extension Options</h2>
+        <div id="options-controls">
+            <label>Bookmarks folder to show:
+                <select id="folderId"></select>
+            </label>
+            <br><br>
+            <label>Max icons per row: <input type="number" id="iconsPerRow" min="1" max="20"></label>
+            <br><br>
+            <label>Max icons to show (many icons can reduce performance): <input type="number" id="maxEntries" min="1" max="500" value="100"></label>
+            <br><br>
+            <label>Background image URL (be sure to style the background image using the #background id in the CSS field below.): <input type="text" id="bgUrl"></label>
+            <br><br>
+            <label>Custom CSS:</label>
+            <textarea id="customCss"
+                style="width:600px;height:180px;border:1px solid #444;font-family:monospace;"></textarea>
+            <br>
+            <button id="saveOptions">Save Options</button>
+            <button id="exportHtml">Export as HTML</button>
+        </div>
+    </div>
+    <script src="options.js"></script>
+</body>
+
+</html>

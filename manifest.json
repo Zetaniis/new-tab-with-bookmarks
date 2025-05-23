@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+  "name": "Custom New Tab Bookmarks",
+  "version": "1.0",
+  "description": "Replaces the new tab page with a grid of bookmarks from a chosen folder, customizable layout and style.",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "permissions": [
+    "bookmarks",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "options_page": "options.html",
+ // "content_security_policy": {
+ //   "extension_pages": "script-src 'self' chrome-extension://hfjbmagddngcpeloejdejnfgbamkjaeg/"
+ // }
+  "content_security_policy": "script-src 'self' chrome-extension://hfjbmagddngcpeloejdejnfgbamkjaeg/; object-src 'self'"
+}
