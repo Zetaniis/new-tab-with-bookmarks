@@ -60,10 +60,10 @@ function getFaviconUrl(url) {
         'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="%23333"/><text x="16" y="22" font-size="16" text-anchor="middle" fill="%23fff">🌐</text></svg>';
     // Create a temporary image to check if the favicon loads
     const testImg = new window.Image();
-    testImg.onerror = function() {
+    testImg.onerror = function () {
         localStorage.setItem(cacheKey, defaultIcon);
     };
-    testImg.onload = function() {
+    testImg.onload = function () {
         // Optionally cache successful loads (browser will cache anyway)
     };
     testImg.src = faviconUrl;
@@ -87,7 +87,8 @@ function renderBookmarks(bookmarks) {
             icon.title = bm.title || (bm.url ? '' : 'Folder');
             if (bm.url) {
                 icon.href = bm.url;
-                icon.target = '_blank';
+                // Open bookmarks in the current tab
+                icon.target = '_self';
                 const img = document.createElement('img');
                 img.src = getFaviconUrl(bm.url);
                 img.alt = '';
@@ -101,6 +102,7 @@ function renderBookmarks(bookmarks) {
                 img.style.display = 'block';
                 img.style.marginBottom = '4px';
                 icon.appendChild(img);
+                // Open bookmark folder in a new tab
                 icon.addEventListener('click', (e) => {
                     e.preventDefault();
                     chrome.tabs.create({ url: `chrome://bookmarks/?id=${bm.id}` });
