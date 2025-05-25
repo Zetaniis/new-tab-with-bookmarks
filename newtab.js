@@ -47,28 +47,6 @@ function loadAndRenderBookmarks() {
     });
 }
 
-function getFaviconUrl(url) {
-    const cacheKey = 'favicon_' + url;
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-        return cached;
-    }
-    const faviconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(url)}`;
-    // Return a fallback icon if the favicon fails to load
-    // We'll use a data URL for a simple SVG globe icon as the default
-    const defaultIcon =
-        'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="%23333"/><text x="16" y="22" font-size="16" text-anchor="middle" fill="%23fff">🌐</text></svg>';
-    // Create a temporary image to check if the favicon loads
-    const testImg = new window.Image();
-    testImg.onerror = function () {
-        localStorage.setItem(cacheKey, defaultIcon);
-    };
-    testImg.onload = function () {
-        // Optionally cache successful loads (browser will cache anyway)
-    };
-    testImg.src = faviconUrl;
-    return faviconUrl;
-}
 
 function renderBookmarks(bookmarks) {
     // Prepare in memory
@@ -83,60 +61,74 @@ function renderBookmarks(bookmarks) {
         slice.forEach(bm => {
             const icon = document.createElement('a');
             icon.className = 'bookmark-icon';
-            // Set the title property to the bookmark/folder text (not URL)
+            // Always set the title to the bookmark/folder text (not URL)
             icon.title = bm.title || (bm.url ? '' : 'Folder');
+            console.log(bm);
+            // Bookmark folder
             if (!bm.url || bm.url.startsWith('chrome://bookmarks')) {
                 icon.href = '#';
-                icon.title = 'Open in Bookmark Manager';
-                const img = document.createElement('span');
-                img.textContent = '📁';
-                img.style.fontSize = '32px';
-                img.style.display = 'block';
-                img.style.marginBottom = '4px';
+                icon.title = bm.title || 'Open in Bookmark Manager';
+                const img = document.createElement('img');
+                img.src = 'bookmark_folder.svg';
+                img.alt = '';
                 icon.appendChild(img);
                 // Open bookmark folder in a new tab
                 icon.addEventListener('click', (e) => {
                     e.preventDefault();
                     chrome.tabs.create({ url: `chrome://bookmarks/?id=${bm.id}` });
                 });
-            } 
-            else if (bm.url.startsWith('chrome://')){
-                icon.href = '#';
-                icon.title = 'Open in Bookmark Manager';
-                const img = document.createElement('span');
-                img.textContent = '[ ]';
-                img.style.fontSize = '32px';
-                img.style.display = 'block';
-                img.style.marginBottom = '4px';
-                icon.appendChild(img);
-                // Open bookmark folder in a new tab
-                icon.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    chrome.tabs.create({ url: bm.url });
-                });
             }
-            else if (bm.url.startsWith('file:///')){
-                icon.href = bm.url;
-                // Open bookmarks in the current tab
-                icon.target = '_self';
-                icon.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    chrome.tabs.create({ url: bm.url });
-                });
+            // chrome internals
+            else if (bm.url.startsWith('chrome://')) {
+                icon.href = '#';
+                icon.title = bm.title || 'Chrome internal page';
                 const img = document.createElement('img');
-                img.src = getFaviconUrl(bm.url);
+                img.src = 'internals.svg';
                 img.alt = '';
                 icon.appendChild(img);
+                // Open chrome:// url in a new tab
+                icon.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    chrome.tabs.create({ url: bm.url });
+                });
             }
+            // file access
+            else if (bm.url.startsWith('file:///')) {
+                icon.href = bm.url;
+                icon.target = '_self';
+                const img = document.createElement('img');
+                img.src = 'file.svg';
+                img.alt = '';
+                icon.appendChild(img);
+                // Optionally open in new tab (remove if not wanted)
+                icon.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    chrome.tabs.create({ url: bm.url });
+                });
+            }
+            // normal bookmarks/urls
             else {
                 icon.href = bm.url;
-                // Open bookmarks in the current tab
                 icon.target = '_self';
                 const img = document.createElement('img');
-                img.src = getFaviconUrl(bm.url);
-                img.alt = '';
-                icon.appendChild(img);
 
+                const cacheKey = 'favicon_' + bm.url;
+                const cached = localStorage.getItem(cacheKey);
+                if (cached) {
+                    img.src = cached;
+                }
+                else {
+                    // Use Google's favicon service
+                    img.src = `https://t3.gstatic.com/faviconV2?client=chrome&size=32&url=${encodeURIComponent(bm.url)}`;
+                    img.alt = '';
+                    // If favicon fails, use default_url.svg
+                    img.onerror = function () {
+                        img.onerror = null;
+                        img.src = 'default_url.svg';
+                    };
+                    localStorage.setItem(cacheKey, img.src);
+                }
+                icon.appendChild(img);
             }
             const span = document.createElement('span');
             span.textContent = bm.title || bm.url || 'Folder';
