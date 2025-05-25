@@ -41,10 +41,6 @@ body {
 }
 
 #bookmarks-container {
-    /* position: absolute; */
-    /* left: 50%; */
-    /* top: 50%; */
-    /* transform: translate(-50%, -50%) scale(1.25); */
     z-index: 1;
     /* Prevent the top from going above the viewport */
     max-height: 100vh;
@@ -53,7 +49,6 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    transform-origin: top center;
     transform: scale(1.5);
     /* padding: auto; */
 }
