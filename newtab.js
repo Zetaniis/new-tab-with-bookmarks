@@ -85,7 +85,7 @@ function renderBookmarks(bookmarks) {
             icon.className = 'bookmark-icon';
             // Set the title property to the bookmark/folder text (not URL)
             icon.title = bm.title || (bm.url ? '' : 'Folder');
-            if (!bm.url){           //bm.url.startsWith('chrome://')) {
+            if (!bm.url || bm.url.startsWith('chrome://bookmarks')) {
                 icon.href = '#';
                 icon.title = 'Open in Bookmark Manager';
                 const img = document.createElement('span');
@@ -100,6 +100,21 @@ function renderBookmarks(bookmarks) {
                     chrome.tabs.create({ url: `chrome://bookmarks/?id=${bm.id}` });
                 });
             } 
+            else if (bm.url.startsWith('chrome://')){
+                icon.href = '#';
+                icon.title = 'Open in Bookmark Manager';
+                const img = document.createElement('span');
+                img.textContent = '[ ]';
+                img.style.fontSize = '32px';
+                img.style.display = 'block';
+                img.style.marginBottom = '4px';
+                icon.appendChild(img);
+                // Open bookmark folder in a new tab
+                icon.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    chrome.tabs.create({ url: bm.url });
+                });
+            }
             else if (bm.url.startsWith('file:///')){
                 icon.href = bm.url;
                 // Open bookmarks in the current tab
