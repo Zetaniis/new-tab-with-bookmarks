@@ -85,15 +85,7 @@ function renderBookmarks(bookmarks) {
             icon.className = 'bookmark-icon';
             // Set the title property to the bookmark/folder text (not URL)
             icon.title = bm.title || (bm.url ? '' : 'Folder');
-            if (bm.url && !bm.url.startsWith('chrome://')) {
-                icon.href = bm.url;
-                // Open bookmarks in the current tab
-                icon.target = '_self';
-                const img = document.createElement('img');
-                img.src = getFaviconUrl(bm.url);
-                img.alt = '';
-                icon.appendChild(img);
-            } else {
+            if (!bm.url){           //bm.url.startsWith('chrome://')) {
                 icon.href = '#';
                 icon.title = 'Open in Bookmark Manager';
                 const img = document.createElement('span');
@@ -107,6 +99,29 @@ function renderBookmarks(bookmarks) {
                     e.preventDefault();
                     chrome.tabs.create({ url: `chrome://bookmarks/?id=${bm.id}` });
                 });
+            } 
+            else if (bm.url.startsWith('file:///')){
+                icon.href = bm.url;
+                // Open bookmarks in the current tab
+                icon.target = '_self';
+                icon.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    chrome.tabs.create({ url: bm.url });
+                });
+                const img = document.createElement('img');
+                img.src = getFaviconUrl(bm.url);
+                img.alt = '';
+                icon.appendChild(img);
+            }
+            else {
+                icon.href = bm.url;
+                // Open bookmarks in the current tab
+                icon.target = '_self';
+                const img = document.createElement('img');
+                img.src = getFaviconUrl(bm.url);
+                img.alt = '';
+                icon.appendChild(img);
+
             }
             const span = document.createElement('span');
             span.textContent = bm.title || bm.url || 'Folder';
