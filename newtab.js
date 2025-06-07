@@ -50,7 +50,7 @@ function loadAndRenderBookmarks() {
 
 function renderBookmarks(bookmarks) {
     // Prepare in memory
-    const container = document.createElement('div');
+    const container = document.getElementById('bookmarks-grid');
     const perRow = settings.iconsPerRow;
     const maxEntries = settings.maxEntries || 100;
     const limited = bookmarks.slice(0, maxEntries);
@@ -63,20 +63,22 @@ function renderBookmarks(bookmarks) {
             icon.className = 'bookmark-icon';
             // Always set the title to the bookmark/folder text (not URL)
             icon.title = bm.title || (bm.url ? '' : 'Folder');
-            console.log(bm);
+            // console.log(bm);
             // Bookmark folder
+            const insideIcon = document.createElement('div');
+            insideIcon.className = 'bookmark-icon-inner';
             if (!bm.url || bm.url.startsWith('chrome://bookmarks')) {
                 icon.href = '#';
                 icon.title = bm.title || 'Open in Bookmark Manager';
                 const img = document.createElement('img');
                 img.src = 'bookmark_folder.svg';
                 img.alt = '';
-                icon.appendChild(img);
                 // Open bookmark folder in a new tab
                 icon.addEventListener('click', (e) => {
                     e.preventDefault();
                     chrome.tabs.create({ url: `chrome://bookmarks/?id=${bm.id}` });
                 });
+                insideIcon.appendChild(img);
             }
             // chrome internals
             else if (bm.url.startsWith('chrome://')) {
@@ -85,12 +87,12 @@ function renderBookmarks(bookmarks) {
                 const img = document.createElement('img');
                 img.src = 'internals.svg';
                 img.alt = '';
-                icon.appendChild(img);
                 // Open chrome:// url in a new tab
                 icon.addEventListener('click', (e) => {
                     e.preventDefault();
                     chrome.tabs.create({ url: bm.url });
                 });
+                insideIcon.appendChild(img);
             }
             // file access
             else if (bm.url.startsWith('file:///')) {
@@ -99,12 +101,12 @@ function renderBookmarks(bookmarks) {
                 const img = document.createElement('img');
                 img.src = 'file.svg';
                 img.alt = '';
-                icon.appendChild(img);
                 // Optionally open in new tab (remove if not wanted)
                 icon.addEventListener('click', (e) => {
                     e.preventDefault();
                     chrome.tabs.create({ url: bm.url });
                 });
+                insideIcon.appendChild(img);
             }
             // normal bookmarks/urls
             else {
@@ -128,17 +130,18 @@ function renderBookmarks(bookmarks) {
                     };
                     localStorage.setItem(cacheKey, img.src);
                 }
-                icon.appendChild(img);
+                insideIcon.appendChild(img);
             }
             const span = document.createElement('span');
             span.textContent = bm.title || bm.url || 'Folder';
-            icon.appendChild(span);
+            insideIcon.appendChild(span);
+            icon.appendChild(insideIcon);
             row.appendChild(icon);
         });
         container.appendChild(row);
     }
-    bookmarksGrid.innerHTML = '';
-    bookmarksGrid.appendChild(container);
+    // bookmarksGrid.innerHTML = '';
+    // bookmarksGrid.appendChild(container);
 }
 
 // Initial load
