@@ -50,10 +50,8 @@ jobs:
           draft: false
           prerelease: false
           
-      - name: Upload release assets
-        uses: dwenegar/upload-release-assets@v1
+      - name: Upload release assets via GH CLI
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_id: ${{ steps.create.outputs.id }}
-          assets_path: build/*.crx
+        run: |
+          gh release upload "${{ github.ref_name }}" build/*.crx
