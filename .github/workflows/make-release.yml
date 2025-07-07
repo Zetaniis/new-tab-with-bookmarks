@@ -48,5 +48,4 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
         uses: mxschmitt/action-tmate@v3
         with:
-          detached: true
           limit-access-to-actor: true
