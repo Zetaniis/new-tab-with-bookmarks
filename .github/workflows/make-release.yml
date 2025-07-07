@@ -27,12 +27,6 @@ jobs:
       - id: pack-out
         run: echo "crx_path=build/extension.crx" >> $GITHUB_OUTPUT
       - run: ls -R build
-
-  release:
-    needs: build-pack
-    runs-on: ubuntu-latest
-
-    steps:
       - uses: actions/checkout@v3
       - uses: actions/create-release@v1
         with:
@@ -40,7 +34,6 @@ jobs:
           release_name: Release ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: ls -R build
       - name: Upload Release Assets
         run: |
           gh release upload "${{ github.ref_name }}" \
