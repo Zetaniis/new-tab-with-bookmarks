@@ -1,1 +1,21 @@
-{}
+{
+  "name": "new-tab-with-bookmarks",
+  "version": "1.0.0",
+  "description": "A minimalistic, customizable new tab page extension for Chromium-based browsers. It displays your bookmarks in rows, supports setting your own CSS and allows Vimium C to inject itself for that tasty vim motion flow.",
+  "homepage": "https://github.com/Zetaniis/new-tab-with-bookmarks#readme",
+  "bugs": {
+    "url": "https://github.com/Zetaniis/new-tab-with-bookmarks/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zetaniis/new-tab-with-bookmarks.git"
+  },
+  "license": "ISC",
+  "author": "Zetaniis",
+  "type": "commonjs",
+  "main": "newtab.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {}
+}
