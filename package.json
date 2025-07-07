@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/Zetaniis/new-tab-with-bookmarks.git"
   },
-  "license": "ISC",
+  "license": "MIT",
   "author": "Zetaniis",
   "type": "commonjs",
   "main": "newtab.js",

@@ -12,11 +12,6 @@ A minimalistic, customizable new tab page extension for Chromium-based browsers.
 - **Favicon Handling:** Uses Google’s favicon service with a fallback to a default icon.
 
 ## Installation
-
-1. **From releases**
-- [latest](https://github.com/Zetaniis/new-tab-with-bookmarks/releases/latest) 
-
-2. **From the repo**
 - Load the repo as an unpacked extension in Chrome via `chrome://extensions`.
 
 ## Sample background image css
