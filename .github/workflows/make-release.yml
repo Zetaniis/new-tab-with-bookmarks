@@ -37,6 +37,6 @@ jobs:
       - name: Upload Release Assets
         run: |
           gh release upload "${{ github.ref_name }}" \
-            build/extension.zip "${{ needs.build-pack.outputs.crx-path }}"
+            build/extension.crx
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
