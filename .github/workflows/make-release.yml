@@ -4,57 +4,41 @@ on:
     tags:
       - 'v*.*.*'
   workflow_dispatch:
+      inputs:
+        debug_enabled:
+          type: boolean
+          default: false
 
 permissions:
   contents: write
-  
+
 jobs:
   build-pack:
     runs-on: ubuntu-latest
     outputs:
-      crx-path: ${{ steps.pack.outputs.crx_path }}
+      crx-path: ${{ steps.pack-out.outputs.crx_path }}
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Make folder
-        run: |
-          mkdir build
-      
-      - name: Zip extension
-        run: |
-          zip -r build/extension.zip . -x .github/**
-
-      - name: Pack .crx
-        id: pack
-        uses: cardinalby/webext-buildtools-chrome-crx-action@v2
+      - run: mkdir -p build
+      - run: zip -r build/extension.zip . -x ".github/*"
+      - uses: cardinalby/webext-buildtools-chrome-crx-action@v2
         with:
-          zipFilePath: 'build/extension.zip'
-          crxFilePath: 'build/extension.crx'
+          zipFilePath: build/extension.zip
+          crxFilePath: build/new-tab-with-bookmarks.crx
           privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }}
-
-  release:
-    needs: build-pack
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Create Release
-        id: create
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          keyFormat: 'pem'
+      - id: pack-out
+        run: echo "crx_path=build/extension.crx" >> $GITHUB_OUTPUT
+      - uses: actions/create-release@v1
         with:
           tag_name: ${{ github.ref_name }}
           release_name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-          
-      - name: Upload all release assets
-        uses: dwenegar/upload-release-assets@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_id: ${{ steps.create.outputs.id }}
-          assets_path: build/*.{zip,crx}
-        
+      - name: Upload Release Assets
+        run: |
+          gh release upload "${{ github.ref_name }}" \
+            build/new-tab-with-bookmarks.crx
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
