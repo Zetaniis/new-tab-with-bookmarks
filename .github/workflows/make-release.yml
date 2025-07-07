@@ -50,11 +50,10 @@ jobs:
           draft: false
           prerelease: false
           
-      - name: Upload all release assets
+      - name: Upload release assets
         uses: dwenegar/upload-release-assets@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           release_id: ${{ steps.create.outputs.id }}
-          assets_path: build/*.{zip,crx}
-        
+          assets_path: build/*.crx
