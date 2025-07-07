@@ -4,6 +4,10 @@ on:
     tags:
       - 'v*.*.*'
   workflow_dispatch:
+      inputs:
+      debug_enabled:
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -40,3 +44,9 @@ jobs:
             build/extension.crx
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup tmate session ☎️
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+          limit-access-to-actor: true
