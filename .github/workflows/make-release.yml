@@ -5,9 +5,9 @@ on:
       - 'v*.*.*'
   workflow_dispatch:
       inputs:
-      debug_enabled:
-        type: boolean
-        default: false
+        debug_enabled:
+          type: boolean
+          default: false
 
 permissions:
   contents: write
