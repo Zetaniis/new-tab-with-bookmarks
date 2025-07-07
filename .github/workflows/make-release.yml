@@ -1,0 +1,52 @@
+name: Release CRX Extension
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-pack:
+    runs-on: ubuntu-latest
+    outputs:
+      crx-path: ${{ steps.pack.outputs.crx_path }}
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Zip extension
+        run: |
+          zip -r build/extension.zip . -x .github/**
+
+      - name: Pack .crx
+        id: pack
+        uses: cardinalby/webext-buildtools-chrome-crx-action@v2
+        with:
+          zipFilePath: 'build/extension.zip'
+          crxFilePath: 'build/extension.crx'
+          privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }}
+
+  release:
+    needs: build-pack
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create Release
+        id: create
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          
+      - name: Upload all release assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create.outputs.id }}
+          assets_path: build/*.{zip,crx}
+        
