@@ -7,7 +7,7 @@ const backgroundDiv = document.getElementById('background');
 // Default settings
 let settings = {
     iconsPerRow: 6,
-    bgUrl: '',
+    // bgUrl: '',
     folderId: '1', // '1' is usually the bookmarks bar in Chrome
     customCss: '',
     maxEntries: 100
@@ -17,8 +17,8 @@ let settings = {
 function loadSettings() {
     chrome.storage.local.get(null, (data) => {
         settings = { ...settings, ...data };
-        if (settings.bgUrl) backgroundDiv.style.backgroundImage = `url('${settings.bgUrl}')`;
-        else backgroundDiv.style.backgroundImage = '';
+        // if (settings.bgUrl) backgroundDiv.style.backgroundImage = `url('${settings.bgUrl}')`;
+        // else backgroundDiv.style.backgroundImage = '';
         loadAndRenderBookmarks();
         loadCustomCss();
     });
@@ -76,7 +76,9 @@ function renderBookmarks(bookmarks) {
                 // Open bookmark folder in a new tab
                 icon.addEventListener('click', (e) => {
                     e.preventDefault();
-                    chrome.tabs.create({ url: `chrome://bookmarks/?id=${bm.id}` });
+                    chrome.tabs.create({ url: bm.url }, () => {
+                        window.close();
+                    });
                 });
                 insideIcon.appendChild(img);
             }
@@ -90,7 +92,9 @@ function renderBookmarks(bookmarks) {
                 // Open chrome:// url in a new tab
                 icon.addEventListener('click', (e) => {
                     e.preventDefault();
-                    chrome.tabs.create({ url: bm.url });
+                    chrome.tabs.create({ url: bm.url }, () => {
+                        window.close();
+                    });
                 });
                 insideIcon.appendChild(img);
             }
@@ -104,7 +108,9 @@ function renderBookmarks(bookmarks) {
                 // Optionally open in new tab (remove if not wanted)
                 icon.addEventListener('click', (e) => {
                     e.preventDefault();
-                    chrome.tabs.create({ url: bm.url });
+                    chrome.tabs.create({ url: bm.url }, () => {
+                        window.close();
+                    });
                 });
                 insideIcon.appendChild(img);
             }
@@ -114,22 +120,14 @@ function renderBookmarks(bookmarks) {
                 icon.target = '_self';
                 const img = document.createElement('img');
 
-                const cacheKey = 'favicon_' + bm.url;
-                const cached = localStorage.getItem(cacheKey);
-                if (cached) {
-                    img.src = cached;
-                }
-                else {
-                    // Use Google's favicon service
-                    img.src = `https://t3.gstatic.com/faviconV2?client=chrome&size=32&url=${encodeURIComponent(bm.url)}`;
-                    img.alt = '';
-                    // If favicon fails, use default_url.svg
-                    img.onerror = function () {
-                        img.onerror = null;
-                        img.src = 'default_url.svg';
-                    };
-                    localStorage.setItem(cacheKey, img.src);
-                }
+                // Use Google's favicon service
+                img.src = `https://t3.gstatic.com/faviconV2?client=chrome&size=32&url=${encodeURIComponent(bm.url)}`;
+                img.alt = '';
+                // If favicon fails, use default_url.svg
+                img.onerror = function () {
+                    img.onerror = null;
+                    img.src = 'default_url.svg';
+                };
                 insideIcon.appendChild(img);
             }
             const span = document.createElement('span');

@@ -22,7 +22,7 @@ function loadOptions() {
     // After populating, load settings
     chrome.storage.local.get(null, (data) => {
       document.getElementById('iconsPerRow').value = data.iconsPerRow ?? 6;
-      document.getElementById('bgUrl').value = data.bgUrl ?? '';
+      // document.getElementById('bgUrl').value = data.bgUrl ?? '';
       document.getElementById('customCss').value = data.customCss ?? '';
       folderSelect.value = data.folderId ?? '1';
       document.getElementById('maxEntries').value = data.maxEntries ?? 100;
@@ -32,13 +32,13 @@ function loadOptions() {
 
 function saveOptions() {
   const iconsPerRow = parseInt(document.getElementById('iconsPerRow').value) || 6;
-  const bgUrl = document.getElementById('bgUrl').value;
+  // const bgUrl = document.getElementById('bgUrl').value;
   const customCss = document.getElementById('customCss').value;
   const folderId = document.getElementById('folderId').value;
   const maxEntries = parseInt(document.getElementById('maxEntries').value) || 100;
   chrome.storage.local.set({
     iconsPerRow,
-    bgUrl,
+    // bgUrl,
     folderId,
     customCss,
     maxEntries
@@ -59,6 +59,7 @@ function saveOptions() {
   });
 }
 
+// not used 
 function exportNewTabHtml() {
   // Create a hidden iframe to load newtab.html
   const iframe = document.createElement('iframe');
@@ -138,7 +139,7 @@ function exportNewTabHtml() {
 }
 
 document.getElementById('saveOptions').addEventListener('click', saveOptions);
-document.getElementById('exportHtml').addEventListener('click', exportNewTabHtml);
+// document.getElementById('exportHtml').addEventListener('click', exportNewTabHtml);
 
 // Initial load
 loadOptions();
