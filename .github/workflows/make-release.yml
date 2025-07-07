@@ -30,8 +30,6 @@ jobs:
           keyFormat: 'pem'
       - id: pack-out
         run: echo "crx_path=build/extension.crx" >> $GITHUB_OUTPUT
-      - run: ls -R build
-      - uses: actions/checkout@v3
       - uses: actions/create-release@v1
         with:
           tag_name: ${{ github.ref_name }}
@@ -44,8 +42,3 @@ jobs:
             build/extension.crx
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup tmate session ☎️
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
