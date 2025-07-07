@@ -25,7 +25,7 @@ jobs:
       - uses: cardinalby/webext-buildtools-chrome-crx-action@v2
         with:
           zipFilePath: build/extension.zip
-          crxFilePath: build/extension.crx
+          crxFilePath: build/new-tab-with-bookmarks.crx
           privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }}
           keyFormat: 'pem'
       - id: pack-out
@@ -39,6 +39,6 @@ jobs:
       - name: Upload Release Assets
         run: |
           gh release upload "${{ github.ref_name }}" \
-            build/extension.crx
+            build/new-tab-with-bookmarks.crx
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
