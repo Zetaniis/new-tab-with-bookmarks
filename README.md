@@ -14,7 +14,7 @@ A minimalistic, customizable new tab page extension for Chromium-based browsers.
 ## Installation
 
 1. **From releases**
-- [latest](https://github.com/Zetaniis//releases/latest) 
+- [latest](https://github.com/Zetaniis/releases/latest) 
 
 2. **From the repo**
 - Load the repo as an unpacked extension in Chrome via `chrome://extensions`.
